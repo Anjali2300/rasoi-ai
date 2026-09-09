@@ -136,6 +136,7 @@ button, input {
 .hero-content h1 span {
   color: #c34e38;
   background: linear-gradient(135deg, #c34e38, #e06d53);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -409,6 +410,8 @@ button, input {
   background: linear-gradient(135deg, #c34e38, #e06d53);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+-webkit-background-clip: text;
 }
 
 .login-description {
