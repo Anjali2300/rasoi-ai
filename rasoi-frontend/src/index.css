@@ -1,0 +1,169 @@
+/* ==========================================================================
+   RASOI DESIGN SYSTEM TOKENS & FOUNDATIONS
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+
+  /* Primary Palette (Warm Indian Spice & Terracotta) */
+  --color-primary: #E05338;
+  --color-primary-hover: #C94229;
+  --color-primary-active: #B2341E;
+  --color-primary-light: #FDF4F1;
+  --color-primary-tint: #FAE4DC;
+  --color-primary-glow: rgba(224, 83, 56, 0.28);
+
+  /* Warm Accents (Saffron Amber & Turmeric) */
+  --color-amber: #D97706;
+  --color-amber-light: #FEF3C7;
+  --color-amber-glow: rgba(217, 119, 6, 0.25);
+
+  /* Success Accents (Fresh Coriander Green) */
+  --color-emerald: #10B981;
+  --color-emerald-light: #ECFDF5;
+  --color-emerald-border: #A7F3D0;
+  --color-emerald-text: #065F46;
+
+  /* Danger / Removal (Chilli Red) */
+  --color-danger: #EF4444;
+  --color-danger-light: #FEE2E2;
+
+  /* Neutrals & Surfaces */
+  --color-bg: #FAF7F2;
+  --color-bg-subtle: #F3EFEA;
+  --color-surface: #FFFFFF;
+  --color-surface-glass: rgba(255, 255, 255, 0.82);
+  --color-surface-glass-dark: rgba(31, 22, 20, 0.65);
+  --color-border: #EADBCE;
+  --color-border-light: #F2EBE4;
+  --color-border-focus: #E05338;
+
+  /* Text & Ink */
+  --color-text-main: #1F1614;
+  --color-text-muted: #6E5D57;
+  --color-text-subtle: #998781;
+  --color-text-inverse: #FFFFFF;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(31, 22, 20, 0.05);
+  --shadow-sm: 0 4px 12px rgba(31, 22, 20, 0.05);
+  --shadow-md: 0 10px 25px -4px rgba(31, 22, 20, 0.08), 0 4px 10px -2px rgba(31, 22, 20, 0.03);
+  --shadow-lg: 0 20px 45px -8px rgba(31, 22, 20, 0.12), 0 8px 16px -4px rgba(31, 22, 20, 0.04);
+  --shadow-glow: 0 12px 30px -4px rgba(224, 83, 56, 0.28);
+  --shadow-glass: 0 8px 32px 0 rgba(195, 78, 56, 0.06);
+
+  /* Border Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Reset & Smoothness */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text-main);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  background: var(--color-bg);
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(224, 83, 56, 0.09), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(217, 119, 6, 0.06), transparent 70%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-subtle);
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
