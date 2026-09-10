@@ -29,6 +29,68 @@ let usersCollection;
 
 
 // ======================================================
+// GEMINI RETRY HELPER
+// ======================================================
+
+async function generateGeminiWithRetry(request, maxAttempts = 3) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`Gemini request attempt ${attempt}/${maxAttempts}`);
+
+      const response = await ai.models.generateContent(request);
+
+      console.log("Gemini request successful.");
+
+      return response;
+
+    } catch (err) {
+      lastError = err;
+
+      const errorMessage = err?.message || String(err);
+
+      console.error(
+        `Gemini request failed on attempt ${attempt}:`,
+        errorMessage
+      );
+
+      // Retry temporary Gemini/server errors
+      const retryableError =
+        errorMessage.includes("503") ||
+        errorMessage.includes("UNAVAILABLE") ||
+        errorMessage.includes("429") ||
+        errorMessage.includes("RESOURCE_EXHAUSTED") ||
+        errorMessage.includes("500") ||
+        errorMessage.includes("502") ||
+        errorMessage.includes("504");
+
+      // Stop immediately for non-retryable errors
+      if (!retryableError) {
+        throw err;
+      }
+
+      // Stop if this was the last attempt
+      if (attempt === maxAttempts) {
+        throw err;
+      }
+
+      // Wait before retrying
+      const delay = 2000 * Math.pow(2, attempt - 1);
+
+      console.log(`Retrying Gemini in ${delay / 1000} seconds...`);
+
+      await new Promise((resolve) => {
+        setTimeout(resolve, delay);
+      });
+    }
+  }
+
+  throw lastError;
+}
+
+
+// ======================================================
 // START SERVER
 // ======================================================
 
@@ -170,7 +232,7 @@ async function startServer() {
         });
       }
 
-      // Create JWT
+      // Create JWT token
       const token = jwt.sign(
         {
           userId: user._id.toString(),
@@ -463,7 +525,7 @@ Use exactly this structure:
 `;
 
       const geminiResponse =
-        await ai.models.generateContent({
+        await generateGeminiWithRetry({
           model: "gemini-3.6-flash",
 
           contents: [
@@ -507,10 +569,29 @@ Use exactly this structure:
 
       console.error(err);
 
+      const errorMessage = err?.message || String(err);
+
+      const isTemporaryGeminiError =
+        errorMessage.includes("503") ||
+        errorMessage.includes("UNAVAILABLE") ||
+        errorMessage.includes("429") ||
+        errorMessage.includes("RESOURCE_EXHAUSTED") ||
+        errorMessage.includes("500") ||
+        errorMessage.includes("502") ||
+        errorMessage.includes("504");
+
+      if (isTemporaryGeminiError) {
+        return res.status(503).json({
+          error:
+            "Gemini is temporarily unavailable. Please try again in a few seconds.",
+          details: errorMessage,
+        });
+      }
+
       res.status(500).json({
         error:
           "Something went wrong generating the full recipe.",
-        details: err.message,
+        details: errorMessage,
       });
     }
   });
@@ -538,7 +619,7 @@ Use exactly this structure:
         const mimeType = req.file.mimetype;
 
         const geminiResponse =
-          await ai.models.generateContent({
+          await generateGeminiWithRetry({
             model: "gemini-3.6-flash",
 
             contents: [
@@ -619,10 +700,29 @@ Example:
 
         console.error(err);
 
+        const errorMessage = err?.message || String(err);
+
+        const isTemporaryGeminiError =
+          errorMessage.includes("503") ||
+          errorMessage.includes("UNAVAILABLE") ||
+          errorMessage.includes("429") ||
+          errorMessage.includes("RESOURCE_EXHAUSTED") ||
+          errorMessage.includes("500") ||
+          errorMessage.includes("502") ||
+          errorMessage.includes("504");
+
+        if (isTemporaryGeminiError) {
+          return res.status(503).json({
+            error:
+              "Gemini is temporarily unavailable. Please try again in a few seconds.",
+            details: errorMessage,
+          });
+        }
+
         res.status(500).json({
           error:
             "Something went wrong detecting ingredients.",
-          details: err.message,
+          details: errorMessage,
         });
       }
     }
@@ -720,8 +820,9 @@ Use exactly this structure:
 }
 `;
 
+      // Gemini request with automatic retry
       const geminiResponse =
-        await ai.models.generateContent({
+        await generateGeminiWithRetry({
           model: "gemini-3.6-flash",
 
           contents: [
@@ -762,10 +863,29 @@ Use exactly this structure:
 
       console.error(err);
 
+      const errorMessage = err?.message || String(err);
+
+      const isTemporaryGeminiError =
+        errorMessage.includes("503") ||
+        errorMessage.includes("UNAVAILABLE") ||
+        errorMessage.includes("429") ||
+        errorMessage.includes("RESOURCE_EXHAUSTED") ||
+        errorMessage.includes("500") ||
+        errorMessage.includes("502") ||
+        errorMessage.includes("504");
+
+      if (isTemporaryGeminiError) {
+        return res.status(503).json({
+          error:
+            "Gemini is temporarily unavailable. Please try again in a few seconds.",
+          details: errorMessage,
+        });
+      }
+
       res.status(500).json({
         error:
           "Something went wrong generating the recipe.",
-        details: err.message,
+        details: errorMessage,
       });
     }
   });
